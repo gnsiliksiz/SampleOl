@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Ol Sample";
+}
+<div id="map" class="map"></div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        var iconFeatures = [], iconFeature;
+        $.getJSON("maps.json", function (data) {
+            $.each(data, function (key, value) {
+                var a = value.Coordinates[0];
+                var b = value.Coordinates[1];
+                iconFeature = new ol.Feature({
+                    geometry: new ol.geom.Point([a, b])
+
+                });
+                iconFeature.setStyle(
+                    new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 46],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'pixels',
+                            src: 'map-marker.png'
+                        })
+                    }));
+                iconFeatures.push(iconFeature);
+
+            });
+
+            InitializeMap(iconFeatures);
+            AddInteraction();
+
+        }).fail(function (e, textStatus, error) {
+            var err = textStatus + "," + error;
+            //console.log("Request Failed:" + err);
+            InitializeMap();
+            AddInteraction();
+        });
+
+
+    });
+</script>
